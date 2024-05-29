@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Counter from "./sensors";
+import Game from "./game";
 
-export default function App() {
+
+const Stepper = <Counter/>;
+const Gaming = <Game/>;
+
+
+
+export default function App() { 
+
+  //for fun weather reporting, if can make the background window transparent? somehow
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <View style={styles.screen}>
+        <View>
+          <Text style={styles.title}>SteppingStones</Text>
+          <Text>The RPG - that counts!</Text>
+        </View>
+        <View>
+          {Gaming}
+          {Stepper}
+        </View>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
+    padding: 15,
+  },
+  title:{
+    fontSize: 30
   },
 });
