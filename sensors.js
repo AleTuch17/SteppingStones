@@ -7,22 +7,52 @@ import {
     Pedometer,
   } from 'expo-sensors';
 import {useState, useEffect} from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { updateAugment, updateSteps } from './global';
 import { useKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-let augments = [];
+
+const getTotalSteps = async () => {
+    try {
+        const value = await AsyncStorage.getItem('total_steps');
+        if (value !== null) {
+            return parseInt(value);
+        }
+    } catch (e) {
+        // error reading value
+        console.log("Error reading value.");
+    }
+    return 0;
+}
+
+
+const storeTotalSteps = async (currentSteps) => {
+    try {
+        await AsyncStorage.setItem('total_steps', String.valueOf(currentSteps+TOTAL_STEPS));
+    } catch (e) {
+    // saving error
+        console.log("Error fetching value.");
+    }
+    return 0;
+}
+
+//let TOTAL_STEPS = getTotalSteps();
+
 
 
 
 export default function Counter(){
-    const [logs, updateLogs] = useState([]); //make an async storage call?
+
+    let augments = [];
+
     const [accelerometer, setListener] = useState(null);
     const [{x, y, z}, setData] = useState({x: 0, y:0, z:0});
     const [active, setActive] = useState(false);
     const [currentSteps, setCurrentStepCount] = useState(0);
+    //const [TOTAL_STEPS, updateTotal] = useState(getTotalSteps());
+    //FIX ERROR THAT SHOWS UP
 
     useEffect(()=>{
         if (active){
@@ -33,6 +63,7 @@ export default function Counter(){
         }else{
             enable();
         }
+        
     })
 
 
@@ -64,13 +95,16 @@ export default function Counter(){
     }
 
     async function finishSteps(){
-        //store the steps - TO TEST LATER
-        updateLogs(logs =>([...logs, (new Date(), currentSteps)]));
         
         //reset Accelerometer
         accelerometer && accelerometer.remove();
         console.log(currentSteps);
         updateSteps(currentSteps);
+
+        //Async Storage
+        //storeTotalSteps(currentSteps);
+        //updateTotal(getTotalSteps());
+
         setCurrentStepCount(0);
 
         //augment
@@ -79,27 +113,30 @@ export default function Counter(){
         
     }
 
-    return ( //to include: button to record, and log display (like recordings from LiveCompose) 
-        <Pressable onPress={()=>{
-            setActive(!active);
-            if (active){ //flipped?
-                finishSteps();
-            }else{
-                recordSteps();
-                
-            }
-        }}>
-            {active? <View style = {[styles.button, styles.on_pbutton]}>
-                <Text style={{fontSize: 20, color: 'white'}}>Steps: {currentSteps}</Text>
-                {/* <Text style={{color: 'white'}}>x: {x}</Text>
-                <Text style={{color: 'white'}}>y: {y}</Text>
-                <Text style={{color: 'white'}}>z: {z}</Text> */}
-                <Text style={{fontSize: 15, color: 'white'}}>Speed Augment: {Math.round(augment()*100)}%</Text>
-            </View> : 
-            <View style = {[styles.button, styles.off_pbutton]}>
-                <Text style={{fontSize: 20, color: 'red'}}>Start!</Text>
-                </View>}
-        </Pressable>
+    return ( 
+        <View>
+            <Pressable onPress={()=>{
+                setActive(!active);
+                if (active){ //flipped?
+                    finishSteps();
+                }else{
+                    recordSteps();
+                    
+                }
+            }}>
+                {active? <View style = {[styles.button, styles.on_pbutton]}>
+                    <Text style={{fontSize: 20, color: 'white'}}>Steps: {currentSteps}</Text>
+                    {/* <Text style={{color: 'white'}}>x: {x}</Text>
+                    <Text style={{color: 'white'}}>y: {y}</Text>
+                    <Text style={{color: 'white'}}>z: {z}</Text> */}
+                    <Text style={{fontSize: 15, color: 'white'}}>Speed Augment: {Math.round(augment()*100)}%</Text>
+                </View> : 
+                <View style = {[styles.button, styles.off_pbutton]}>
+                    <Text style={{fontSize: 20, color: 'red'}}>Start!</Text>
+                    </View>}
+            </Pressable>
+            {/* <Text>Total Steps Taken: {TOTAL_STEPS}</Text> */}
+        </View>
     );
 }
 
@@ -119,28 +156,6 @@ function Logs(){ //using the grab logs to display
     </Pressable>);
 }
 
-
-
-const LOGS = 'logs'; //key for async storage
-
-async function storeLogs(logs){
-    try{
-        const jsonLogs = JSON.stringify(logs);
-        await AsyncStorage.setItem(LOGS, jsonLogs);
-    }catch (e){
-        console.log("unable to save logs: ", e);
-    }
-}
-
-async function grabLogs(){
-    try{
-        const jsonLogs = await AsyncStorage.getItem(LOGS);
-        return jsonLogs != null ? JSON.parse(jsonValue) : null;
-    }catch(e){
-        console.log("unable to save logs: ", e);
-        return null;
-    }
-}
 
 
 

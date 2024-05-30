@@ -1,15 +1,16 @@
 import React, {useState} from "react";
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Alert } from 'react-native';
 import { grabAugment, grabSteps } from "./global"; //need to add in the augment for the fighting element of the game
 import Gacha from "./gacha";
 import * as Progress from 'react-native-progress';
+
 
 //hall of stones? 
 
 const ATTACK = 50;
 
-//progress not working
 //make an instructions page
+//make a stats page
 
 
 export default function Game(){
@@ -26,7 +27,7 @@ export default function Game(){
             updateSteps(current);
             //console.log("attack goal: ", attackGoal);
             //console.log(progress+(steps*ATTACK));
-            updateProgress(progress+(steps*ATTACK)); //the amount added to progress; later plus the gacha power-ups
+            updateProgress(progress+(steps*ATTACK*grabAugment())); //the amount added to progress; later plus the gacha power-ups
             //console.log(progress, steps);
             if (progress >= attackGoal){
                 setStage(stage+1);
@@ -47,7 +48,7 @@ export default function Game(){
 
     return (<View style={{margin: 15, alignItems: 'center'}}>
         <Text style={{color: 'red', fontSize: 20, textAlign: 'center'}}>Level {stage}</Text>
-        <Progress.Bar progress={progress/attackGoal} width={200} height={20} color={'red'}/>
+        <Progress.Bar progress={progress<=0? 0 : progress/attackGoal} width={200} height={20} color={'red'}/>
         {/* <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
             <Text style={{color: 'red', fontSize: 18}}>Trail: {attackGoal}</Text>
             <Text style={{color: 'red', fontSize: 18}}>Progress: {progress}</Text>
@@ -74,8 +75,12 @@ export default function Game(){
                     <Text style={{color: 'white', fontSize: 17}}>+</Text>
             </Pressable>
         </View>
-        <Pressable onPress={()=>{reset()}}>
-                <Text style={{color: 'red', textAlign: 'center', fontSize: 15, height: 50, margin: 10, fontWeight: 'bold'}}>RESET PROGRESS</Text>
+        <Pressable onPress={()=>{Alert.alert('Reset Progress', 'Are you sure you want to reset your progress?', [
+      {
+        text: 'YES',
+        onPress: () => reset(),
+      }, {text: 'CANCEL'}])}}>
+                <Text style={{color: 'red', textAlign: 'center', fontSize: 15, height: 50, margin: 10, fontWeight: 'bold'}}>RESET</Text>
         </Pressable>
     </View>);
 }
