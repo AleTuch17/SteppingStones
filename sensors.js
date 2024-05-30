@@ -69,6 +69,7 @@ export default function Counter(){
         
         //reset Accelerometer
         accelerometer && accelerometer.remove();
+        console.log(currentSteps);
         updateSteps(currentSteps);
         setCurrentStepCount(0);
 

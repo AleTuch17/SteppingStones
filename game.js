@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import { grabAugment, grabSteps } from "./global";
-//need to add in the augment
+import { grabAugment, grabSteps } from "./global"; //need to add in the augment for the fighting element of the game
+import Gacha from "./gacha";
+import * as Progress from 'react-native-progress';
+
+//hall of stones? 
 
 const ATTACK = 50;
 
@@ -14,16 +17,17 @@ export default function Game(){
     const [stage, setStage] = useState(1);
     const [attackGoal, setAttack] = useState(goal*stage*ATTACK);
     const [progress, updateProgress] = useState(0);
-    const [steps, updateSteps] = useState(grabSteps());
+    const [steps, updateSteps] = useState(null);
 
     function levelPass(){
         console.log('Updating Progress');
         let current = grabSteps();
         if (current != null){
             updateSteps(current);
-            console.log("attack goal: ", attackGoal);
-            console.log(progress+(steps*ATTACK));
+            //console.log("attack goal: ", attackGoal);
+            //console.log(progress+(steps*ATTACK));
             updateProgress(progress+(steps*ATTACK)); //the amount added to progress; later plus the gacha power-ups
+            //console.log(progress, steps);
             if (progress >= attackGoal){
                 setStage(stage+1);
                 setAttack(goal*stage*ATTACK);
@@ -41,14 +45,15 @@ export default function Game(){
         console.log('Reset progress.');
     }
 
-    return (<View style={{margin: 15}}>
-        <Text style={{color: 'red', fontSize: 20, textAlign: 'center'}}>Level: {stage}</Text>
-        <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
+    return (<View style={{margin: 15, alignItems: 'center'}}>
+        <Text style={{color: 'red', fontSize: 20, textAlign: 'center'}}>Level {stage}</Text>
+        <Progress.Bar progress={progress/attackGoal} width={200} height={20} color={'red'}/>
+        {/* <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
             <Text style={{color: 'red', fontSize: 18}}>Trail: {attackGoal}</Text>
             <Text style={{color: 'red', fontSize: 18}}>Progress: {progress}</Text>
-        </View>
+        </View> */}
         <Pressable onPress={()=>{levelPass()}}>
-                <Text style={styles.button} >CASH IN</Text>
+                <Text style={[styles.button, {width: 200, marginBottom: 50}]} >CASH IN</Text>
         </Pressable>
         <View style={{flexDirection: 'row', fontSize: 17}}>
             <Pressable onPress={()=>{
@@ -70,7 +75,7 @@ export default function Game(){
             </Pressable>
         </View>
         <Pressable onPress={()=>{reset()}}>
-                <Text style={{color: 'red', textAlign: 'center', fontSize: 15, height: 50, margin: 10, fontWeight: 'bold'}}>RESET</Text>
+                <Text style={{color: 'red', textAlign: 'center', fontSize: 15, height: 50, margin: 10, fontWeight: 'bold'}}>RESET PROGRESS</Text>
         </Pressable>
     </View>);
 }
