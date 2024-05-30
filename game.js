@@ -1,10 +1,13 @@
 import React, {useState} from "react";
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { grabAugment, grabSteps } from "./global";
+//need to add in the augment
 
 const ATTACK = 50;
 
-//PROGRESS / STEPS NOT WORKINGGGGGG
+//progress not working
+//make an instructions page
+
 
 export default function Game(){
     const [goal, setGoal] = useState(500); //use the goal for the level threshold

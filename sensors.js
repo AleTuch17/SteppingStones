@@ -10,6 +10,8 @@ import {useState, useEffect} from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { updateAugment, updateSteps } from './global';
+import { useKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
+
 
 let augments = [];
 
@@ -26,15 +28,13 @@ export default function Counter(){
         if (active){
             Pedometer.watchStepCount(result => {
                 setCurrentStepCount(result.steps);
-                
             });
 
-            //debugging - WORKS
-            //console.log(grabAugment());
         }else{
             enable();
         }
     })
+
 
     async function enable(){
         if (await Pedometer.isAvailableAsync()){
@@ -50,8 +50,8 @@ export default function Counter(){
     }
 
     function augment(){
-        //gets the orientation - is it more "vertial"? (analog to it being in a pocket / away instead of being hand-held)
-        //returns the % of power strength
+        //gets the orientation (analog to it being in a pocket / away instead of being hand-held)
+        //returns the % of power strength to advance through the trail
         let aug = 1-(1-Math.abs(y)+Math.abs(x)+Math.abs(z))/3;
 
         augments.push(aug);
@@ -75,6 +75,7 @@ export default function Counter(){
         //augment
         const averageAugment = augments.reduce((sum, currentValue) => sum + currentValue, 0) / augments.length;
         updateAugment(averageAugment);
+        
     }
 
     return ( //to include: button to record, and log display (like recordings from LiveCompose) 
@@ -84,6 +85,7 @@ export default function Counter(){
                 finishSteps();
             }else{
                 recordSteps();
+                
             }
         }}>
             {active? <View style = {[styles.button, styles.on_pbutton]}>

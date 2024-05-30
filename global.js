@@ -13,7 +13,11 @@ export function grabAugment(){
 }
 
 export function updateSteps(currentSteps){
-    steps = currentSteps;
+    if (steps == null){
+        steps = currentSteps;
+    }else{
+        steps+=currentSteps;
+    }
 }
 
 export function grabSteps(){
