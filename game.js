@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, Pressable, Alert } from 'react-native';
 import { grabAugment, grabSteps } from "./global"; //need to add in the augment for the fighting element of the game
 import Gacha from "./gacha";
 import * as Progress from 'react-native-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//to store progress
 
-
-//hall of stones? 
 
 const ATTACK = 50;
 
 //make an instructions page
-//make a stats page
+//make a stats 
 
 
 export default function Game(){
@@ -53,9 +53,14 @@ export default function Game(){
             <Text style={{color: 'red', fontSize: 18}}>Trail: {attackGoal}</Text>
             <Text style={{color: 'red', fontSize: 18}}>Progress: {progress}</Text>
         </View> */}
-        <Pressable onPress={()=>{levelPass()}}>
-                <Text style={[styles.button, {width: 200, marginBottom: 50}]} >CASH IN</Text>
-        </Pressable>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable onPress={()=>{levelPass()}}>
+                    <Text style={[styles.button, {width: 200, marginBottom: 50}]} >CASH IN</Text>
+            </Pressable>
+            <Pressable onPress={()=>{}}>
+                    <Text style={{backgroundColor: 'blue', borderRadius: 5, color: 'white', fontSize: 13, width: 50, height: 50}}>i</Text>
+            </Pressable>
+        </View>
         <View style={{flexDirection: 'row', fontSize: 17}}>
             <Pressable onPress={()=>{
                     if (goal > 100){
