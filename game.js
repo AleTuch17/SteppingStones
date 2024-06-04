@@ -57,8 +57,9 @@ export default function Game(){
             <Pressable onPress={()=>{levelPass()}}>
                     <Text style={[styles.button, {width: 200, marginBottom: 50}]} >CASH IN</Text>
             </Pressable>
-            <Pressable onPress={()=>{}}>
-                    <Text style={{backgroundColor: 'blue', borderRadius: 5, color: 'white', fontSize: 13, width: 50, height: 50}}>i</Text>
+            <Pressable onPress={()=>{Alert.alert('How to Play', 'Start to Walk! Keep your eyes OFF of your screen. When you finish walking, cash in and watch your progress increase.', [
+      , {text: 'COOL, THANKS!'}])}}>
+                    <Text style={{backgroundColor: 'blue', borderRadius: 5, color: 'white', fontSize: 13, width: 25, height: 25, textAlign: "center"}}>i</Text>
             </Pressable>
         </View>
         <View style={{flexDirection: 'row', fontSize: 17}}>
